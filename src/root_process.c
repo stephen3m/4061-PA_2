@@ -25,10 +25,10 @@ void redirection(char **dup_list, int size, char* root_dir){
     // TODO(overview): redirect standard output to an output file in output_file_folder("output/final_submission/")
     // TODO(step1): determine the filename based on root_dir. e.g. if root_dir is "./root_directories/root1", the output file's name should be "root1.txt"
     char file_name[1024] = "";
-    sprintf(file_name, "%s", );
+    sprintf(file_name, "%s", extract_filename(root_dir));
 
     //TODO(step2): redirect standard output to output file (output/final_submission/root*.txt)
-    int fd = open("output/final_submission/", WRITE, PERM);
+    int fd = open(output_file_folder, WRITE, PERM);
     if(fd == -1){
         perror("Failed to open file\n");
         exit(-1);
@@ -79,6 +79,15 @@ void delete_duplicate_files(char **dup_list, int size) {
         }
     }
 }
+
+int getSize(char** array){
+    int length = 0;
+    while(*array){
+        length ++;
+        array++;
+    }
+    return length;
+}
 // Done by: RobertW, Checked by:
 // ./root_directories <directory>
 int main(int argc, char* argv[]) {
@@ -113,8 +122,9 @@ int main(int argc, char* argv[]) {
     }
     else if(first_proc == 0){   // Child process
         close(fd[0]); // Close read end
-
-        execl("./nonleaf_process", root_directory, fd[1], (char *)NULL);
+        char* write_end = "";
+        sprintf(write_end, "%d", fd[1]);
+        execl("./nonleaf_process", root_directory, write_end, (char *)NULL);
 
         close(fd[1]);
     }
@@ -122,7 +132,7 @@ int main(int argc, char* argv[]) {
         close(fd[1]);  // Close write end
 
         // Read in file hashes and aggregate the file hashes
-        read(fd[0], all_filepath_hashvalue, 4098);
+        read(fd[0], all_filepath_hashvalue, 1024);
 
         close(fd[0]);
     }
@@ -130,13 +140,14 @@ int main(int argc, char* argv[]) {
     //TODO(step3): malloc dup_list and retain list & use parse_hash() in utils.c to parse all_filepath_hashvalue
     // dup_list: list of paths of duplicate files. We need to delete the files and create symbolic links at the location
     // retain_list: list of paths of unique files. We will create symbolic links for those files
-    char* dup_list = malloc(sizeof(all_filepath_hashvalue));
-    char* retain_list = malloc(sizeof(all_filepath_hashvalue));
+    char** dup_list = (char**)malloc(sizeof(all_filepath_hashvalue));
+    char** retain_list = (char**)malloc(sizeof(all_filepath_hashvalue));
     
-    int idx = parse_hash(all_filepath_hashvalue, &dup_list, &retain_list);
+    parse_hash(all_filepath_hashvalue, dup_list, retain_list);
 
     //TODO(step4): implement the functions
-    delete_duplicate_files(dup_list,size);
+    int size = getSize(dup_list);
+    delete_duplicate_files(dup_list, size);
     create_symlinks(dup_list, retain_list, size);
     redirection(dup_list, size, argv[1]);
 

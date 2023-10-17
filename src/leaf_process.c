@@ -15,23 +15,34 @@ int main(int argc, char* argv[]) {
     }
     //TODO(): get <file_path> <pipe_write_end> from argv[]
     char* file_path = argv[1];
-    int* fd1 = argv[2];
+    int fd1 = atoi(argv[2]);
 
     //TODO(): create the hash of given file
-    char result_hash[4098];
-    hash_data_block(&result_hash, file_path);
+    char result_hash[1024];
+    hash_data_block(result_hash, file_path);
 
     //TODO(): construct string write to pipe. The format is "<file_path>|<hash_value>"
     char buffer[1024];
     sprintf(buffer, "%s|%s", file_path, result_hash);
-    
+
 
     if(){
         //TODO(inter submission)
         //TODO(overview): create a file in output_file_folder("output/inter_submission/root*") and write the constructed string to the file
+
         //TODO(step1): extract the file_name from file_path using extract_filename() in utils.c
+        char buffer[1024] = extract_filename(file_path);
+
         //TODO(step2): extract the root directory(e.g. root1 or root2 or root3) from file_path using extract_root_directory() in utils.c
+        char root_dir[1024] = extract_root_directory(file_path);
+
         //TODO(step3): get the location of the new file (e.g. "output/inter_submission/root1" or "output/inter_submission/root2" or "output/inter_submission/root3")
+        int fd = open(output_file_folder, WRITE, PERM);
+        if(fd == -1){
+            perror("Failed to open file\n");
+            exit(-1);
+    }
+
         //TODO(step4): create and write to file, and then close file
         //TODO(step5): free any arrays that are allocated using malloc!! Free the string returned from extract_root_directory()!! It is allocated using malloc in extract_root_directory()
 
