@@ -20,6 +20,7 @@ TO BE DELETED LATER:
 What is memset
 */
 
+// Done by: Stephen, Checked by:
 void redirection(char **dup_list, int size, char* root_dir){
     // TODO(overview): redirect standard output to an output file in output_file_folder("output/final_submission/")
     // TODO(step1): determine the filename based on root_dir. e.g. if root_dir is "./root_directories/root1", the output file's name should be "root1.txt"
@@ -78,7 +79,7 @@ void delete_duplicate_files(char **dup_list, int size) {
         }
     }
 }
-
+// Done by: RobertW, Checked by:
 // ./root_directories <directory>
 int main(int argc, char* argv[]) {
     if (argc != 2) {

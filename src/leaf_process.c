@@ -14,13 +14,17 @@ int main(int argc, char* argv[]) {
         return -1;
     }
     //TODO(): get <file_path> <pipe_write_end> from argv[]
-
+    char* file_path = argv[1];
+    int* fd1 = argv[2];
 
     //TODO(): create the hash of given file
-
+    char result_hash[4098];
+    hash_data_block(&result_hash, file_path);
 
     //TODO(): construct string write to pipe. The format is "<file_path>|<hash_value>"
-
+    char buffer[1024];
+    sprintf(buffer, "%s|%s", file_path, result_hash);
+    
 
     if(){
         //TODO(inter submission)
