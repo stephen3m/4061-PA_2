@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     hash_data_block(result_hash, file_path);
 
     //TODO(): construct string write to pipe. The format is "<file_path>|<hash_value>"
-    char buffer[BUFFER_SIZE];
+    char buffer[BUFFER_SIZE+1];
     sprintf(buffer, "%s|%s", file_path, result_hash);
 
 
