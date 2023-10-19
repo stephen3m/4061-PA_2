@@ -7,6 +7,9 @@
 
 char *output_file_folder = "output/inter_submission/";
 
+#define PATH_MAX 1024
+
+// Done by RobertT, Checked by Stephen
 int main(int argc, char* argv[]) {
     if (argc != 3) {
         printf("Usage: Inter Submission --> ./leaf_process <file_path> 0\n");
@@ -15,21 +18,20 @@ int main(int argc, char* argv[]) {
     }
     //TODO(): get <file_path> <pipe_write_end> from argv[]
     char* file_path = argv[1];
-    int fd1 = atoi(argv[2]); //STEPHEN, don't need atoi since it's already an int?
+    int fd1 = atoi(argv[2]); 
 
     //TODO(): create the hash of given file. // using defined vars instead of hard code for 'good practice'
     char result_hash[PATH_MAX];
     hash_data_block(result_hash, file_path);
 
     //TODO(): construct string write to pipe. The format is "<file_path>|<hash_value>"
-    char buffer[BUFFER_SIZE+1];
-    sprintf(buffer, "%s|%s", file_path, result_hash);
+    char buffer[strlen(file_path)+strlen(result_hash)+3];
+    sprintf(buffer, "%s|%s|", file_path, result_hash);
 
 
     if(!fd1){ // if fd1 is 0 (stdin), we enter this if statement
         //TODO(inter submission)
         //TODO(overview): create a file in output_file_folder("output/inter_submission/root*") and write the constructed string to the file
-
         //TODO(step1): extract the file_name from file_path using extract_filename() in utils.c
         char *file_name = extract_filename(file_path);
 
@@ -44,7 +46,7 @@ int main(int argc, char* argv[]) {
         FILE* fd = fopen(new_file_path, "w");
         if(fd == NULL){
             perror("Failed to open file!\n");
-            exit(-1);
+            return -1;
         }
         fwrite(buffer, sizeof(char), strlen(buffer), fd);
         fclose(fd);
@@ -54,8 +56,8 @@ int main(int argc, char* argv[]) {
     } else {
         //TODO(final submission): write the string to pipe
         write(fd1, buffer, strlen(buffer));
-        exit(0);
+        return 0;
     }
 
-    exit(0);
+    return 0;
 }
