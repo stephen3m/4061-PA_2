@@ -17,10 +17,10 @@ TO BE DELETED LATER:
     Look at figure 2 on page 5 of the writeup
 2. Fo step 3, Do you use readlink to read the content from each symbolic link? I looked it up
 // Stephen Notes for main:
-What is memset
+What is memset? memset(buffer, 0, BUFSIZE); initializes a buffer with zeroes 
 */
 
-// Done by: Stephen, Checked by:
+// Done by: Stephen and RobertW, Checked by:
 void redirection(char **dup_list, int size, char* root_dir){
     // TODO(overview): redirect standard output to an output file in output_file_folder("output/final_submission/")
     // TODO(step1): determine the filename based on root_dir. e.g. if root_dir is "./root_directories/root1", the output file's name should be "root1.txt"

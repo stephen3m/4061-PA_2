@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     }
     //TODO(): get <file_path> <pipe_write_end> from argv[]
     char* file_path = argv[1];
-    int fd1 = atoi(argv[2]);
+    int fd1 = atoi(argv[2]); //STEPHEN, don't need atoi since it's already an int?
 
     //TODO(): create the hash of given file. // using defined vars instead of hard code for 'good practice'
     char result_hash[PATH_MAX];
@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     sprintf(buffer, "%s|%s", file_path, result_hash);
 
 
-    if(!fd1){
+    if(!fd1){ // if fd1 is 0 (stdin), we enter this if statement
         //TODO(inter submission)
         //TODO(overview): create a file in output_file_folder("output/inter_submission/root*") and write the constructed string to the file
 

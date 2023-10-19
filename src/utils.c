@@ -14,7 +14,7 @@ char* extract_filename(char* path) {
 
 // Extracts the directory name after "root_directories"
 // e.g. path="./root_directories/original_root1/sub_1/WorldStage_2.txt"
-// return value = "root1/"
+// return value = "original_root1/"
 char* extract_root_directory(const char* path) {
     char* root_dir = strstr(path, "/root_directories/");
     if (root_dir == NULL){
@@ -56,6 +56,7 @@ void remove_filepath_duplicate(char **dup_list, char **retain_list, int *size) {
     }
 }
 
+// Stephen note: ensures that both retain list and dup list will have same number of entries
 void sanitize_dup_retain(char **dup_list, char **retain_list, int size) {
     for (int m = 0; m < size; m++) {
         for (int n = 0; n < size; n++) {
@@ -72,6 +73,7 @@ void sanitize_dup_retain(char **dup_list, char **retain_list, int size) {
     }
 }
 
+// Stephen note: parse a string containing file hashes and extract information to fill duplist and retainlist
 int parse_hash(char * file_hashes, char**dup_list, char** retain_list){
     char delim[] = "|";
     char array[32][128];
