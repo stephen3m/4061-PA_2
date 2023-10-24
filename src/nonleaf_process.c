@@ -7,7 +7,6 @@
 #include <dirent.h>
 
 #define BUFFER_SIZE 1024
-#define PATH_MAX 1024
 
 // Done by: Checked by:
 int main(int argc, char* argv[]) {
@@ -26,7 +25,7 @@ int main(int argc, char* argv[]) {
     memset(buffer, 0, BUFFER_SIZE);
 
     //TODO(step3): open directory
-    DIR *dir = opendir(dirname);
+    DIR *dir = opendir(file_path);
     struct dirent *entry;
     if (dir == NULL) {
         perror("Error opening directory");
@@ -97,7 +96,7 @@ int main(int argc, char* argv[]) {
         char process[18] = "";
         if (entry->d_type == DT_REG)
             strcpy(process, "./leaf_process");
-        else if (entry->d_type = DT_DIR)
+        else if (entry->d_type == DT_DIR)
             strcpy(process, "./nonleaf_process");
 
         if (child_pid == 0) { // child

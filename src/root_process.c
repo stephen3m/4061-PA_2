@@ -26,9 +26,13 @@ void redirection(char **dup_list, int size, char* root_dir){
     // TODO(step1): determine the filename based on root_dir. e.g. if root_dir is "./root_directories/root1", the output file's name should be "root1.txt"
     char file_name[1024] = "";
     sprintf(file_name, "%s", extract_filename(root_dir));
+    strcat(file_name, ".txt");
 
     //TODO(step2): redirect standard output to output file (output/final_submission/root*.txt)
-    int fd = open(output_file_folder, WRITE, PERM);
+    char output_path[100] = "output/final_submission/";
+    strcat(output_path, file_name);
+    
+    int fd = open(output_path, WRITE, PERM);
     if(fd == -1){
         perror("Failed to open file\n");
         exit(-1);
@@ -39,11 +43,12 @@ void redirection(char **dup_list, int size, char* root_dir){
         perror("Failed to redirect output\n");
         exit(-1);
     }
-
+    
     //TODO(step3): read the content each symbolic link in dup_list, write the path as well as the content of symbolic link to output file(as shown in expected)
     for (int i = 0; i < size; i++) {
         char link_content[1024];
         ssize_t link_len = readlink(dup_list[i], link_content, sizeof(link_content) - 1);
+
         if (link_len == -1) {
             perror("Failed to read symbolic link");
             exit(-1);
@@ -144,9 +149,17 @@ int main(int argc, char* argv[]) {
     char** retain_list = (char**)malloc(sizeof(all_filepath_hashvalue));
     
     parse_hash(all_filepath_hashvalue, dup_list, retain_list);
+    printf("%s\n", all_filepath_hashvalue);
+    printf("%ld\n", sizeof(dup_list));
+    // char** temp_dup = dup_list;
+    // while (*temp_dup) {
+    //     printf("%s\n", *temp_dup);
+    //     temp_dup++;
+    // }
 
     //TODO(step4): implement the functions
     int size = getSize(dup_list);
+    printf("%d\n", size);
     delete_duplicate_files(dup_list, size);
     create_symlinks(dup_list, retain_list, size);
     redirection(dup_list, size, argv[1]);
