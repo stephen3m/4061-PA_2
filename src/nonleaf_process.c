@@ -26,7 +26,6 @@ int main(int argc, char* argv[]) {
 
     //TODO(step3): open directory
     DIR *dir = opendir(file_path);
-    DIR *dir = opendir(file_path);
     struct dirent *entry;
     if (dir == NULL) {
         perror("Error opening directory");
