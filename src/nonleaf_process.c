@@ -68,9 +68,6 @@ int main(int argc, char* argv[]) {
 
             // Execute the child process
             execl(process, process, path, write_end, (char *)NULL);
-
-            // Don't need to close write end of child because new child process
-            // created by execl may still need to use it
             perror("Exec failed");
             exit(1);
         }
@@ -82,6 +79,8 @@ int main(int argc, char* argv[]) {
             exit(1);
         }
     }
+    
+    while(wait(NULL) > 0); // wait for all children to finish
 
     //TODO(step5): read from pipe constructed for child process and write to pipe constructed for parent process
 
