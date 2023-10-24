@@ -13,11 +13,7 @@ char *output_file_folder = "output/final_submission/";
 /**
 TO BE DELETED LATER: 
 // Stephen Notes for redirection function:
-1. for step 3, are the path and content of the symbolic links supposed to be separated by "|". 
-    Look at figure 2 on page 5 of the writeup
-2. Fo step 3, Do you use readlink to read the content from each symbolic link? I looked it up
-// Stephen Notes for main:
-What is memset? memset(buffer, 0, BUFSIZE); initializes a buffer with zeroes 
+1. For step 3, Do you use readlink to read the content from each symbolic link? I looked it up
 */
 
 // Done by: Stephen and RobertW, Checked by:
@@ -101,11 +97,10 @@ int main(int argc, char* argv[]) {
     //TODO(overview): fork the first non_leaf process associated with root directory("./root_directories/root*")
     char* root_directory = argv[1];
     char all_filepath_hashvalue[4098]; //buffer for gathering all data transferred from child process
-    memset(all_filepath_hashvalue, 0, sizeof(all_filepath_hashvalue));// clean the buffer
+    memset(all_filepath_hashvalue, 0, sizeof(all_filepath_hashvalue));//initialize all_filepath_hashvalue array to zeros
     
     //TODO(step1): construct pipe
     int fd[2];
-
     if(pipe(fd) == -1){
         printf("error constructing pipe");
         return 1;
@@ -113,7 +108,6 @@ int main(int argc, char* argv[]) {
 
     //TODO(step2): fork() child process & read data from pipe to all_filepath_hashvalue
     pid_t first_proc;
-
     first_proc = fork();
 
     if(first_proc < 0){
@@ -125,14 +119,17 @@ int main(int argc, char* argv[]) {
         char* write_end = "";
         sprintf(write_end, "%d", fd[1]);
         execl("./nonleaf_process", root_directory, write_end, (char *)NULL);
-
-        close(fd[1]);
     }
     else{ // Parent process
         close(fd[1]);  // Close write end
 
         // Read in file hashes and aggregate the file hashes
-        read(fd[0], all_filepath_hashvalue, 1024);
+        int bytesRead = 0;
+        int totalBytesRead = 0;
+        // 1st param: read end, 2nd param: where in all_filepath_hashvalue to put the data, 3rd param: bytes left in all_filepath_hashvalue
+        while ((bytesRead = read(fd[0], all_filepath_hashvalue + totalBytesRead, sizeof(all_filepath_hashvalue) - totalBytesRead)) > 0) {
+            totalBytesRead += bytesRead;
+        }
 
         close(fd[0]);
     }

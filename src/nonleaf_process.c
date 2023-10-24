@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    int read_pipes[100]; // stores all the read ends of the pipes we create in while loop
+    int read_pipes[10]; // stores all the read ends of the pipes we create in while loop; we are given that 1 <= Total number of files <= 10
     int num_pipes = 0; // index used to traverse through read_pipes
 
     //TODO(step4): traverse directory and fork child process

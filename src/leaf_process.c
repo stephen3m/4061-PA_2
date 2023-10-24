@@ -56,6 +56,7 @@ int main(int argc, char* argv[]) {
     } else {
         //TODO(final submission): write the string to pipe
         write(fd1, buffer, strlen(buffer));
+        close(fd1);
         return 0;
     }
 
