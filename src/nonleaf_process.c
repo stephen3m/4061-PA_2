@@ -38,6 +38,9 @@ int main(int argc, char* argv[]) {
     //TODO(step4): traverse directory and fork child process
     // Hints: Maintain an array to keep track of each read end pipe of child process
     while ((entry = readdir(dir)) != NULL) {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+            continue; // move on to the next iteration
+        }
         char path[strlen(file_path) + strlen(entry->d_name) + 2];
         sprintf(path, "%s/%s", file_path, entry->d_name);
 
@@ -67,7 +70,7 @@ int main(int argc, char* argv[]) {
             sprintf(write_end, "%d", fd[1]);
 
             // Execute the child process
-            execl(process, process, path, write_end, (char *)NULL);
+            execl(process, process, path, write_end, NULL);
             perror("Exec failed");
             exit(1);
         }

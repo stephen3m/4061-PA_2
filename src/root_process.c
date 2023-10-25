@@ -31,7 +31,7 @@ void redirection(char **dup_list, int size, char* root_dir){
     char output_path[BUFFER_SIZE] = "output/final_submission/";
     strcat(output_path, file_name);
     
-    int fd = open(output_path, WRITE, PERM);
+    int fd = open(output_path, WRITE, PERM); //DIFF
     if(fd == -1){
         perror("Failed to open file\n");
         exit(-1);
@@ -55,8 +55,7 @@ void redirection(char **dup_list, int size, char* root_dir){
         } else {
             // is this all formatted right? [], :, -->, and stuff
 
-            printf("%s", dup_list[i]); // write path of symbolic link to output file      
-            printf("%s", link_content); // write content of symbolic link to output file
+            printf("[<path of symbolic link> --> <path of retained file>] : [%s --> %s]\n", dup_list[i], link_content);
         }
     }
 
@@ -138,7 +137,7 @@ int main(int argc, char* argv[]) {
     else { // Parent process
         close(fd[1]);  // Close write end
 
-        while(wait(NULL) > 0); // wait for all children to finish
+        wait(NULL); // wait for all children to finish
 
         // Read in file hashes and aggregate the file hashes
         // int bytesRead = 0;
@@ -148,12 +147,13 @@ int main(int argc, char* argv[]) {
         //     totalBytesRead += bytesRead;
         // }
 
-        char buffer1[BUFFER_SIZE];
-        memset(buffer1, 0, BUFFER_SIZE);
-        while (read(fd[0], buffer1, BUFFER_SIZE) > 0) {
-            strcat(all_filepath_hashvalue, buffer1);
-            memset(buffer1, 0, BUFFER_SIZE);
-        }
+        // char buffer1[BUFFER_SIZE];
+        // memset(buffer1, 0, BUFFER_SIZE);
+        // while (read(fd[0], buffer1, BUFFER_SIZE) > 0) {
+        //     strcat(all_filepath_hashvalue, buffer1);
+        //     memset(buffer1, 0, BUFFER_SIZE);
+        // }
+        read(fd[0], all_filepath_hashvalue, BUFFER_SIZE);
 
         close(fd[0]);
     }
@@ -165,16 +165,17 @@ int main(int argc, char* argv[]) {
     char** retain_list = (char**)malloc(sizeof(all_filepath_hashvalue));
     
     parse_hash(all_filepath_hashvalue, dup_list, retain_list);
-    // printf("%s\n", all_filepath_hashvalue);
-    // printf("%ld\n", sizeof(dup_list));
-    // char** temp_dup = dup_list;
-    // while (*temp_dup) {
-    //     printf("%s\n", *temp_dup);
-    //     temp_dup++;
-    // }
+    printf("%s\n", all_filepath_hashvalue);
+    printf("%ld\n", sizeof(dup_list));
+    char** temp_dup = dup_list;
+    while (*temp_dup) {
+        printf("%s\n", *temp_dup);
+        temp_dup++;
+    }
 
     //TODO(step4): implement the functions
-    int size = getSize(dup_list);
+    temp_dup = dup_list;
+    int size = getSize(temp_dup);
     printf("%d\n", size);
     delete_duplicate_files(dup_list, size);
     create_symlinks(dup_list, retain_list, size);
