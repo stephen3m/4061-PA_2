@@ -28,7 +28,7 @@ void redirection(char **dup_list, int size, char* root_dir){
     strcat(file_name, ".txt");
 
     //TODO(step2): redirect standard output to output file (output/final_submission/root*.txt)
-    char output_path[100] = "output/final_submission/";
+    char output_path[BUFFER_SIZE] = "output/final_submission/";
     strcat(output_path, file_name);
     
     int fd = open(output_path, WRITE, PERM);
@@ -36,6 +36,7 @@ void redirection(char **dup_list, int size, char* root_dir){
         perror("Failed to open file\n");
         exit(-1);
     }
+
     // create a duplicate of STDOUT_FILENO and use dup2 to redirect standard output to output file
     int TEMP_STDOUT_FILENO = dup(STDOUT_FILENO);
     if(dup2(fd, STDOUT_FILENO) == -1){
@@ -52,7 +53,9 @@ void redirection(char **dup_list, int size, char* root_dir){
             perror("Failed to read symbolic link");
             exit(-1);
         } else {
-            printf("%s", dup_list[i]); // write path of symbolic link to output file
+            // is this all formatted right? [], :, -->, and stuff
+
+            printf("%s", dup_list[i]); // write path of symbolic link to output file      
             printf("%s", link_content); // write content of symbolic link to output file
         }
     }
@@ -90,8 +93,10 @@ int getSize(char** array){
         length ++;
         array++;
     }
+
     return length;
 }
+
 // Done by: RobertW, Checked by:
 // ./root_directories <directory>
 int main(int argc, char* argv[]) {
@@ -147,6 +152,7 @@ int main(int argc, char* argv[]) {
         memset(buffer1, 0, BUFFER_SIZE);
         while (read(fd[0], buffer1, BUFFER_SIZE) > 0) {
             strcat(all_filepath_hashvalue, buffer1);
+            memset(buffer1, 0, BUFFER_SIZE);
         }
 
         close(fd[0]);
@@ -159,8 +165,8 @@ int main(int argc, char* argv[]) {
     char** retain_list = (char**)malloc(sizeof(all_filepath_hashvalue));
     
     parse_hash(all_filepath_hashvalue, dup_list, retain_list);
-    printf("%s\n", all_filepath_hashvalue);
-    printf("%ld\n", sizeof(dup_list));
+    // printf("%s\n", all_filepath_hashvalue);
+    // printf("%ld\n", sizeof(dup_list));
     // char** temp_dup = dup_list;
     // while (*temp_dup) {
     //     printf("%s\n", *temp_dup);

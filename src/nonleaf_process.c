@@ -90,6 +90,7 @@ int main(int argc, char* argv[]) {
         memset(buffer1, 0, BUFFER_SIZE);
         while (read(read_pipes[i], buffer1, BUFFER_SIZE) > 0) {
             strcat(buffer, buffer1);
+            memset(buffer1, 0, BUFFER_SIZE);
         }
         close(read_pipes[i]);
     }
