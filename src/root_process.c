@@ -47,6 +47,7 @@ void redirection(char **dup_list, int size, char* root_dir){
     //TODO(step3): read the content each symbolic link in dup_list, write the path as well as the content of symbolic link to output file(as shown in expected)
     for (int i = 0; i < size; i++) {
         char link_content[BUFFER_SIZE];
+        memset(link_content, 0, sizeof(link_content));
         ssize_t link_len = readlink(dup_list[i], link_content, sizeof(link_content) - 1);
 
         if (link_len == -1) {
@@ -141,17 +142,17 @@ int main(int argc, char* argv[]) {
     char** retain_list = (char**)malloc(sizeof(all_filepath_hashvalue));
     
     int size = parse_hash(all_filepath_hashvalue, dup_list, retain_list);
-    printf("%s\n", all_filepath_hashvalue);
-    printf("%ld\n", sizeof(dup_list));
-    char** temp_dup = dup_list;
-    while (*temp_dup) {
-        printf("%s\n", *temp_dup);
-        temp_dup++;
-    }
+    // printf("%s\n", all_filepath_hashvalue);
+    // printf("%ld\n", sizeof(dup_list));
+    // char** temp_dup = dup_list;
+    // while (*temp_dup) {
+    //     printf("%s\n", *temp_dup);
+    //     temp_dup++;
+    // }
 
     //TODO(step4): implement the functions
 
-    printf("%d\n", size);
+    // printf("%d\n", size);
     delete_duplicate_files(dup_list, size);
     create_symlinks(dup_list, retain_list, size);
     redirection(dup_list, size, argv[1]);
