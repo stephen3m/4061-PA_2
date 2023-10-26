@@ -13,14 +13,8 @@ char *output_file_folder = "output/final_submission/";
 
 #define BUFFER_SIZE 1024
 
-/**
-TO BE DELETED LATER: 
-// Stephen Notes for redirection function:
-1. For step 3, Do you use readlink to read the content from each symbolic link? I looked it up
-*/
-
 // Done by: Stephen and RobertW, Checked by:
-void redirection(char **dup_list, int size, char* root_dir){
+void redirection(char **dup_list, int size, char* root_dir) {
     // TODO(overview): redirect standard output to an output file in output_file_folder("output/final_submission/")
     // TODO(step1): determine the filename based on root_dir. e.g. if root_dir is "./root_directories/root1", the output file's name should be "root1.txt"
     char file_name[BUFFER_SIZE] = "";
@@ -31,7 +25,7 @@ void redirection(char **dup_list, int size, char* root_dir){
     char output_path[BUFFER_SIZE] = "output/final_submission/";
     strcat(output_path, file_name);
     
-    int fd = open(output_path, WRITE, PERM); // STEPHEN DIFF
+    int fd = open(output_path, WRITE, PERM);
     if(fd == -1){
         perror("Failed to open file\n");
         exit(-1);
@@ -54,11 +48,11 @@ void redirection(char **dup_list, int size, char* root_dir){
             perror("Failed to read symbolic link");
             exit(-1);
         } else {
-
             printf("[<path of symbolic link> --> <path of retained file>] : [%s --> %s]\n", dup_list[i], link_content);
         }
     }
 
+    fflush(stdout);
     // Restore the original standard output
     dup2(TEMP_STDOUT_FILENO, STDOUT_FILENO);
     close(TEMP_STDOUT_FILENO);
@@ -161,7 +155,16 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < size; i++) {
         free(dup_list[i]);
-        free(retain_list[i]);
+        if (strcmp(retain_list[i], "ToFree")) // check if buffer already marked to free
+            strcpy(retain_list[i], "ToFree");
+        else
+            retain_list[i] = NULL;
+    }
+
+    for (int i = 0; i < size; i++) {
+        if (retain_list[i] != NULL) {
+            free(retain_list[i]);
+        }
     }
 
     free(dup_list);
