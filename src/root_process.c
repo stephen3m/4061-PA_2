@@ -17,12 +17,15 @@ char *output_file_folder = "output/final_submission/";
 void redirection(char **dup_list, int size, char* root_dir) {
     // TODO(overview): redirect standard output to an output file in output_file_folder("output/final_submission/")
     // TODO(step1): determine the filename based on root_dir. e.g. if root_dir is "./root_directories/root1", the output file's name should be "root1.txt"
-    char file_name[BUFFER_SIZE] = "";
+    char file_name[BUFFER_SIZE];
+    memset(file_name, 0, sizeof(file_name));
     sprintf(file_name, "%s", extract_filename(root_dir));
     strcat(file_name, ".txt");
 
     //TODO(step2): redirect standard output to output file (output/final_submission/root*.txt)
-    char output_path[BUFFER_SIZE] = "output/final_submission/";
+    char output_path[BUFFER_SIZE];
+    memset(output_path, 0, sizeof(output_path));
+    sprintf(output_path, "output/final_submission/");
     strcat(output_path, file_name);
     
     int fd = open(output_path, WRITE, PERM);
