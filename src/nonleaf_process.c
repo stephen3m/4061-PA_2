@@ -8,7 +8,7 @@
 
 #define BUFFER_SIZE 4096
 
-// Done by: RoberT and Stephen, Checked by:
+// Done by: RoberT, RobertW, and Stephen
 int main(int argc, char* argv[]) {
     if (argc != 3) {
         printf("Usage: ./nonleaf_process <directory_path> <pipe_write_end> \n");
@@ -28,8 +28,8 @@ int main(int argc, char* argv[]) {
     DIR *dir = opendir(file_path);
     struct dirent *entry;
     if (dir == NULL) {
-        perror("Error opening directory");
-        exit(1);
+        printf("Error opening directory");
+        return 1;
     }
 
     int read_pipes[10]; // stores all the read ends of the pipes we create in while loop; we are given that 1 <= Total number of files <= 10
@@ -47,8 +47,8 @@ int main(int argc, char* argv[]) {
         // Create pipe
         int fd[2];
         if (pipe(fd) == -1) {
-            perror("Error constructing pipe");
-            exit(1);
+            printf("Error constructing pipe");
+            return 1;
         }
 
         // Add read end of pipe to read_pipes array 
@@ -71,22 +71,21 @@ int main(int argc, char* argv[]) {
 
             // Execute the child process
             execl(process, process, path, write_end, NULL);
-            perror("Exec failed");
-            exit(1);
+            printf("Exec failed");
+            return 1;
         }
         else if (child_pid > 0) { // Parent process
             close(fd[1]); // Close the write end of the pipe
         }
         else {
-            perror("Fork failed");
-            exit(1);
+            printf("Fork failed");
+            return 1;
         }
     }
     
     while(wait(NULL) > 0); // wait for all children to finish
     //TODO(step5): read from pipe constructed for child process and write to pipe constructed for parent process
-
-    // gather all information from children pipes and close read ends of the pipes
+    // Read all strings received from children pipes and close read ends of the pipes
     for (int i = 0; i < num_pipes; i++) {
         char buffer1[BUFFER_SIZE];
         memset(buffer1, 0, BUFFER_SIZE);
@@ -97,13 +96,12 @@ int main(int argc, char* argv[]) {
         close(read_pipes[i]);
     }
 
-    // send gathered info to parent
+    // Send gathered info to parent
     write(fd1, buffer, strlen(buffer));
     close(fd1);
 
     free(buffer);
     buffer = NULL;
     closedir(dir);
-    
     return 0;
 }

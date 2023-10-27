@@ -13,7 +13,7 @@ char *output_file_folder = "output/final_submission/";
 
 #define BUFFER_SIZE 4096
 
-// Done by: Stephen and RobertW, Checked by:
+// Done by: Stephen, RobertW, and RoberT
 void redirection(char **dup_list, int size, char* root_dir) {
     // TODO(overview): redirect standard output to an output file in output_file_folder("output/final_submission/")
     // TODO(step1): determine the filename based on root_dir. e.g. if root_dir is "./root_directories/root1", the output file's name should be "root1.txt"
@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
     //TODO(step1): construct pipe
     int fd[2];
     if(pipe(fd) == -1) {
-        printf("error constructing pipe");
+        printf("Error constructing pipe");
         return 1;
     }
 
@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
     first_proc = fork();
 
     if (first_proc < 0) {
-        printf("error forking");
+        printf("Error forking");
         return 1;
     }
     else if (first_proc == 0) {   // Child process
@@ -118,17 +118,14 @@ int main(int argc, char* argv[]) {
         char write_end[2] = ""; // room for pipe and null term
         sprintf(write_end, "%d", fd[1]);
         execl("./nonleaf_process", "./nonleaf_process", root_directory, write_end, NULL);
-        perror("Exec failed");
-        exit(1);
+        printf("Exec failed");
+        return 1;
     }
     else { // Parent process
         close(fd[1]);  // Close write end
-        // printf("bruh\n");
-        wait(NULL); // wait for all children to finish
-        // printf("FFFFF\n");
+        wait(NULL); // wait for child to finish
         // Read in file hashes and aggregate the file hashes
         read(fd[0], all_filepath_hashvalue, BUFFER_SIZE);
-
         close(fd[0]);
     }
     
@@ -139,38 +136,13 @@ int main(int argc, char* argv[]) {
     char** retain_list = (char**)malloc(BUFFER_SIZE * 8);
     
     int size = parse_hash(all_filepath_hashvalue, dup_list, retain_list);
-
-    // printf("all-file\n");
-    // char *ptr = all_filepath_hashvalue;
-    // while (*ptr != '\0' && ptr < all_filepath_hashvalue + sizeof(all_filepath_hashvalue)) {
-    //     printf("%s\n", ptr);
-    //     ptr += strlen(ptr) + 1;
-    // }
-        
-    // printf("%ld\n", sizeof(dup_list));
-    // char** temp_dup = dup_list;
-    // printf("dup-list\n");
-    // while (*temp_dup) {
-    //     printf("%s\n", *temp_dup);
-    //     temp_dup++;
-    // }
-    // char** temp_retain = retain_list;
-    // printf("retain-list\n");
-    // while (*temp_retain) {
-    //     printf("%s\n", *temp_retain);
-    //     temp_retain++;
-    // }
-
-    //TODO(step4): implement the functions
-
-    // printf("%d\n", size);
-    // printf("_____________________________________________\n");
     delete_duplicate_files(dup_list, size);
     create_symlinks(dup_list, retain_list, size);
     redirection(dup_list, size, argv[1]);
 
     //TODO(step5): free any arrays that are allocated using malloc!!
 
+    // Handle freeing dup_list[i]
     for (int i = 0; i < size; i++) {
         free(dup_list[i]);
         if (strcmp(retain_list[i], "ToFree")) // check if buffer already marked to free
@@ -179,12 +151,14 @@ int main(int argc, char* argv[]) {
             retain_list[i] = NULL;
     }
 
+    // Handle freeing retain_list[i]
     for (int i = 0; i < size; i++) {
         if (retain_list[i] != NULL) {
             free(retain_list[i]);
         }
     }
 
+    // Free dup_list and retain_list, and prevent future double frees
     free(dup_list);
     free(retain_list);
     dup_list = NULL;

@@ -73,7 +73,6 @@ void sanitize_dup_retain(char **dup_list, char **retain_list, int size) {
     }
 }
 
-// Stephen note: parse a string containing file hashes and extract information to fill duplist and retainlist
 int parse_hash(char * file_hashes, char**dup_list, char** retain_list){
     char delim[] = "|";
     char array[32][128];

@@ -9,7 +9,7 @@ char *output_file_folder = "output/inter_submission/";
 
 #define PATH_MAX 1024
 
-// Done by RobertT, Checked by Stephen
+// Done by RobertT and Stephen
 int main(int argc, char* argv[]) {
     if (argc != 3) {
         printf("Usage: Inter Submission --> ./leaf_process <file_path> 0\n");
@@ -28,7 +28,6 @@ int main(int argc, char* argv[]) {
     char buffer[strlen(file_path)+strlen(result_hash)+3];
     sprintf(buffer, "%s|%s|", file_path, result_hash);
 
-
     if(!fd1){ // if fd1 is 0 (stdin), we enter this if statement
         //TODO(inter submission)
         //TODO(overview): create a file in output_file_folder("output/inter_submission/root*") and write the constructed string to the file
@@ -45,8 +44,8 @@ int main(int argc, char* argv[]) {
         //TODO(step4): create and write to file, and then close file
         FILE* fd = fopen(new_file_path, "w");
         if(fd == NULL){
-            perror("Failed to open file!\n");
-            return -1;
+            printf("Failed to open file!\n");
+            return 1;
         }
         fwrite(buffer, sizeof(char), strlen(buffer), fd);
         fclose(fd);
