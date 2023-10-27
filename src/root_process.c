@@ -11,7 +11,7 @@
 #define PERM (S_IRUSR | S_IWUSR)
 char *output_file_folder = "output/final_submission/";
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 4096
 
 // Done by: Stephen and RobertW, Checked by:
 void redirection(char **dup_list, int size, char* root_dir) {
@@ -123,9 +123,9 @@ int main(int argc, char* argv[]) {
     }
     else { // Parent process
         close(fd[1]);  // Close write end
-
+        printf("bruh\n");
         wait(NULL); // wait for all children to finish
-
+        printf("FFFFF\n");
         // Read in file hashes and aggregate the file hashes
         read(fd[0], all_filepath_hashvalue, BUFFER_SIZE);
 
@@ -140,31 +140,31 @@ int main(int argc, char* argv[]) {
     
     int size = parse_hash(all_filepath_hashvalue, dup_list, retain_list);
 
-    printf("all-file\n");
-    char *ptr = all_filepath_hashvalue;
-    while (*ptr != '\0' && ptr < all_filepath_hashvalue + sizeof(all_filepath_hashvalue)) {
-        printf("%s\n", ptr);
-        ptr += strlen(ptr) + 1;
-    }
+    // printf("all-file\n");
+    // char *ptr = all_filepath_hashvalue;
+    // while (*ptr != '\0' && ptr < all_filepath_hashvalue + sizeof(all_filepath_hashvalue)) {
+    //     printf("%s\n", ptr);
+    //     ptr += strlen(ptr) + 1;
+    // }
         
     // printf("%ld\n", sizeof(dup_list));
-    char** temp_dup = dup_list;
-    printf("dup-list\n");
-    while (*temp_dup) {
-        printf("%s\n", *temp_dup);
-        temp_dup++;
-    }
-    char** temp_retain = retain_list;
-    printf("retain-list\n");
-    while (*temp_retain) {
-        printf("%s\n", *temp_retain);
-        temp_retain++;
-    }
+    // char** temp_dup = dup_list;
+    // printf("dup-list\n");
+    // while (*temp_dup) {
+    //     printf("%s\n", *temp_dup);
+    //     temp_dup++;
+    // }
+    // char** temp_retain = retain_list;
+    // printf("retain-list\n");
+    // while (*temp_retain) {
+    //     printf("%s\n", *temp_retain);
+    //     temp_retain++;
+    // }
 
     //TODO(step4): implement the functions
 
-    printf("%d\n", size);
-    printf("_____________________________________________\n");
+    // printf("%d\n", size);
+    // printf("_____________________________________________\n");
     delete_duplicate_files(dup_list, size);
     create_symlinks(dup_list, retain_list, size);
     redirection(dup_list, size, argv[1]);

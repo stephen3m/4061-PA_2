@@ -6,7 +6,7 @@
 #include <string.h>
 #include <dirent.h>
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 4096
 
 // Done by: RoberT and Stephen, Checked by:
 int main(int argc, char* argv[]) {
@@ -104,5 +104,6 @@ int main(int argc, char* argv[]) {
     free(buffer);
     buffer = NULL;
     closedir(dir);
+    
     return 0;
 }
