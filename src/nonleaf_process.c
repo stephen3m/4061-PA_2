@@ -84,7 +84,6 @@ int main(int argc, char* argv[]) {
     }
     
     while(wait(NULL) > 0); // wait for all children to finish
-
     //TODO(step5): read from pipe constructed for child process and write to pipe constructed for parent process
 
     // gather all information from children pipes and close read ends of the pipes
@@ -103,6 +102,7 @@ int main(int argc, char* argv[]) {
     close(fd1);
 
     free(buffer);
+    buffer = NULL;
     closedir(dir);
     return 0;
 }

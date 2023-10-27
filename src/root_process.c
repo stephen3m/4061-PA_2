@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
 
     //TODO(overview): fork the first non_leaf process associated with root directory("./root_directories/root*")
     char* root_directory = argv[1];
-    char all_filepath_hashvalue[BUFFER_SIZE * 4]; //buffer for gathering all data transferred from child process
+    char all_filepath_hashvalue[BUFFER_SIZE * 8]; //buffer for gathering all data transferred from child process
     memset(all_filepath_hashvalue, 0, sizeof(all_filepath_hashvalue)); //initialize all_filepath_hashvalue array to zeros
     
     //TODO(step1): construct pipe
@@ -135,21 +135,36 @@ int main(int argc, char* argv[]) {
     //TODO(step3): malloc dup_list and retain list & use parse_hash() in utils.c to parse all_filepath_hashvalue
     // dup_list: list of paths of duplicate files. We need to delete the files and create symbolic links at the location
     // retain_list: list of paths of unique files. We will create symbolic links for those files
-    char** dup_list = (char**)malloc(sizeof(all_filepath_hashvalue));
-    char** retain_list = (char**)malloc(sizeof(all_filepath_hashvalue));
+    char** dup_list = (char**)malloc(BUFFER_SIZE * 8);
+    char** retain_list = (char**)malloc(BUFFER_SIZE * 8);
     
     int size = parse_hash(all_filepath_hashvalue, dup_list, retain_list);
-    // printf("%s\n", all_filepath_hashvalue);
+
+    printf("all-file\n");
+    char *ptr = all_filepath_hashvalue;
+    while (*ptr != '\0' && ptr < all_filepath_hashvalue + sizeof(all_filepath_hashvalue)) {
+        printf("%s\n", ptr);
+        ptr += strlen(ptr) + 1;
+    }
+        
     // printf("%ld\n", sizeof(dup_list));
-    // char** temp_dup = dup_list;
-    // while (*temp_dup) {
-    //     printf("%s\n", *temp_dup);
-    //     temp_dup++;
-    // }
+    char** temp_dup = dup_list;
+    printf("dup-list\n");
+    while (*temp_dup) {
+        printf("%s\n", *temp_dup);
+        temp_dup++;
+    }
+    char** temp_retain = retain_list;
+    printf("retain-list\n");
+    while (*temp_retain) {
+        printf("%s\n", *temp_retain);
+        temp_retain++;
+    }
 
     //TODO(step4): implement the functions
 
-    // printf("%d\n", size);
+    printf("%d\n", size);
+    printf("_____________________________________________\n");
     delete_duplicate_files(dup_list, size);
     create_symlinks(dup_list, retain_list, size);
     redirection(dup_list, size, argv[1]);
