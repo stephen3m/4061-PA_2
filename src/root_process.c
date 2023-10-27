@@ -123,9 +123,9 @@ int main(int argc, char* argv[]) {
     }
     else { // Parent process
         close(fd[1]);  // Close write end
-        printf("bruh\n");
+        // printf("bruh\n");
         wait(NULL); // wait for all children to finish
-        printf("FFFFF\n");
+        // printf("FFFFF\n");
         // Read in file hashes and aggregate the file hashes
         read(fd[0], all_filepath_hashvalue, BUFFER_SIZE);
 
