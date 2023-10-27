@@ -43,7 +43,7 @@ inter: outfolder leaf_process
 
 root1 root2 root3:
 	$(call prepare_root_dir,$@)
-	valgrind ./root_process ./root_directories/$@
+	./root_process ./root_directories/$@
 
 final:
 	$(foreach root, $(ROOT_DIRS), $(call prepare_root_dir,$(root)))
